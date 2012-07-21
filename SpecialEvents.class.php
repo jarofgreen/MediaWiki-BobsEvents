@@ -22,7 +22,7 @@ class ExtSpecialEvents extends SpecialPage
 	/** Invoked when the special page should be executed.
 	 */
 	public function execute( $par ) {
-		global $wgOut, $wgEventsOldAge, $wgEventsYoungAge, $wgUser;
+		global $wgOut, $wgUser;
 
 		// Parse special page arguments
 		$args = array();
@@ -33,26 +33,17 @@ class ExtSpecialEvents extends SpecialPage
 		$dbr =& ExtEventUtil::getDatabase();
 
 		// Build SQL query options
-		$options = array( 'ORDER BY'=>'date ASC' );
+		$options = array( 'ORDER BY'=>'start_at ASC' );
 
 		if (isset($args['limit']) && $args['limit']) {
                 	$options['LIMIT'] = $args['limit'];
 		}
 
-		$oldAge = isset($wgEventsOldAge) ? -$wgEventsOldAge : -30;
-		if (isset($args['old'])) {
-			$oldAge = intval($args['old']);
-		}
-		$youngAge = isset($wgEventsYoungAge) ? $wgEventsYoungAge : 365;
-		if (isset($args['young'])) {
-			$youngAge = intval($argv['young']);
-		}
-
 		// Run the SQL.
 	        $res = $dbr->select(
         	        'events', 
-                	array('page_id','date','description'), 
-	                '(date-current_date <= '.$youngAge.' ) and (date-current_date >= '.$oldAge.')',
+                	array('page_id','start_at','end_at','summary'), 
+	                '(end_at > current_date)',
         	        'Database::select',
                 	$options);
         	if (!$res) {
@@ -65,26 +56,26 @@ class ExtSpecialEvents extends SpecialPage
 		// Generate HTML list
 		$pageTitleBuffer = array();
 
-		while ($event = $dbr->fetchRow( $res )) {
+		while ($eventData = $dbr->fetchRow( $res )) {
 
-			if (ExtEventUtil::isVisible($event)) {
-				$pageTitle = isset($pageTitleBuffer[$event['page_id']]) ? $pageTitleBuffer[$event['page_id']] : null;
-				if (!$pageTitle) {
-					 $pageTitle = $pageTitleBuffer[$event['page_id']] =
-						Title::nameOf($event['page_id']);
-				}
-
-				$date = ExtEventUtil::formatDateText($event['date'],true);
-				$text = preg_replace("/[\n\r\f]+/s", '<br>', $event['description']);
-				$pagelink = "[[$pageTitle|&rarr; $pageTitle]]";
-
-				if ($out) $out .= "|-\n";
-
-				$out .= "| width=5% | $date\n";
-				$out .= "| $text\n";
-				$out .= "| width=20% | $pagelink\n";
+			$event = new ExtEventObject();
+			$event->setFromDBRow($eventData);
+			
+			$pageTitle = isset($pageTitleBuffer[$event->getPageId()]) ? $pageTitleBuffer[$event->getPageId()] : null;
+			if (!$pageTitle) {
+				$pageTitle = $pageTitleBuffer[$event->getPageId()] = Title::nameOf($event->getPageId());
 			}
 
+			$date = ExtEventUtil::formatTimestamp($event->getStartTimeStamp(),true);
+			$text = preg_replace("/[\n\r\f]+/s", '<br>', $event->getSummary());
+			$pagelink = "[[$pageTitle|&rarr; $pageTitle]]";
+
+			if ($out) $out .= "|-\n";
+
+			$out .= "| width=5% | ".$date."\n";
+			$out .= "| $text\n";
+			$out .= "| width=20% | $pagelink\n";
+	
 		}
 
 		if ($out) {

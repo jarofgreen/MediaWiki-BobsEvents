@@ -166,7 +166,6 @@ class ExtEventUtil
 		global $wgEventExtensionRenderImportantEventBox;
                 global $wgEventsCloseButtonIcon;
                 global $wgUser;
-                global $wgEventsOldAge, $wgEventsYoungAge;
 		$skin = ($wgUser) ? $wgUser->getSkin() : null;
                 if ($wgEventExtensionRenderImportantEventBox
                      && ($skin!=null)
@@ -175,8 +174,8 @@ class ExtEventUtil
                      && !isset(self::$popupHTMLText)) {
                         $dbr =& ExtEventUtil::getDatabase();
 
-                        $oldAge = isset($wgEventsOldAge) ? -$wgEventsOldAge : -30;
-                        $youngAge = isset($wgEventsYoungAge) ? $wgEventsYoungAge : 365;
+                        $oldAge = -30;
+                        $youngAge = 365;
 
                         $options = array( 'ORDER BY'=>'date ASC' );
                         $res = $dbr->select(

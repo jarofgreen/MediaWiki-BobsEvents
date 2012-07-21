@@ -10,16 +10,6 @@ if ( !defined( 'MEDIAWIKI' ) ) {
  * extension file.
  */
 
-/** Number of days in the past before which events are discarted.
- * null means default value (30).
- */
-$wgEventsOldAge = null;
-
-/** Number of days in the future after which events are discarted.
- * null means default value (365).
- */
-$wgEventsYoungAge = null;
-
 /** Indicates if the box for important events should be rendered.
  * To enable the event box, this global variable must be true,
  * AND the current skin must implement a function named

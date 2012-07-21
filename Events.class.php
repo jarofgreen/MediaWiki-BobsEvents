@@ -118,8 +118,9 @@ class ExtEvents
 	        foreach ($this->events as $event) {
 			$dbevent = array(
 				'page_id' => $pageId,
-				'description' => $event->getDescription(),
-				'date' => date("Ymd",$event->getStartTimeStamp()),
+				'summary' => $event->getSummary(),
+				'start_at' => date("Y-m-d H:i:s",$event->getStartTimeStamp()),
+				'end_at' => date("Y-m-d H:i:s",$event->getEndTimeStamp()),
 			);
                 	$dbr->insert(
                         	'events',

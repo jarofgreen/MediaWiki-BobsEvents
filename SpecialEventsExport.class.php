@@ -19,7 +19,7 @@ class ExtSpecialEventsExport extends SpecialPage
 	/** Invoked when the special page should be executed.
 	 */
 	public function execute( $par ) {
-		global $wgOut, $wgEventsOldAge, $wgEventsYoungAge, $wgUser, $wgServer;
+		global $wgOut, $wgUser, $wgServer;
 
 		// Parse special page arguments
 		$args = array();
@@ -30,26 +30,17 @@ class ExtSpecialEventsExport extends SpecialPage
 		$dbr =& ExtEventUtil::getDatabase();
 
 		// Build SQL query options
-		$options = array( 'ORDER BY'=>'date ASC' );
+		$options = array( 'ORDER BY'=>'start_at ASC' );
 
 		if (isset($args['limit']) && $args['limit']) {
 					$options['LIMIT'] = $args['limit'];
 		}
-
-		$oldAge = isset($wgEventsOldAge) ? -$wgEventsOldAge : -30;
-		if (isset($args['old'])) {
-			$oldAge = intval($args['old']);
-		}
-		$youngAge = isset($wgEventsYoungAge) ? $wgEventsYoungAge : 365;
-		if (isset($args['young'])) {
-			$youngAge = intval($argv['young']);
-		}
-
+		
 		// Run the SQL.
 		$res = $dbr->select(
 				'events', 
-				array('page_id','date','description'), 
-				'(date-current_date <= '.$youngAge.' ) and (date-current_date >= '.$oldAge.')',
+				array('page_id','start_at','end_at','summary'), 
+				'(end_at > current_date)',
 				'Database::select',
 				$options);			 
 
@@ -63,17 +54,21 @@ class ExtSpecialEventsExport extends SpecialPage
 		
 		$pageTitleBuffer = array();
 		
-		while ($event = $dbr->fetchRow( $res )) {
+		while ($eventData = $dbr->fetchRow( $res )) {
 			
-			$pageTitle = isset($pageTitleBuffer[$event['page_id']]) ? $pageTitleBuffer[$event['page_id']] : null;
+			$event = new ExtEventObject();
+			$event->setFromDBRow($eventData);
+			
+			$pageTitle = isset($pageTitleBuffer[$event->getPageId()]) ? $pageTitleBuffer[$event->getPageId()] : null;
 			if (!$pageTitle) {
-				$pageTitle = $pageTitleBuffer[$event['page_id']] = Title::nameOf($event['page_id']);
+				$pageTitle = $pageTitleBuffer[$event->getPageId()] = Title::nameOf($event->getPageId());
 			}
 			
 			$this->printLine('BEGIN','VEVENT');
-			$this->printLine('DTSTART',str_replace("-", "", $event['date']).'T000000Z');
-			$this->printLine('DTEND',str_replace("-", "", $event['date']).'T230000Z');
-			$this->printLine('DESCRIPTION',$event['description']. " ".$wgServer."/index.php/".$pageTitle);
+			$this->printLine('DTSTART',str_replace("-", "", $event->getStartTimeStamp()).'T000000Z');
+			$this->printLine('DTEND',str_replace("-", "", $event->getEndTimeStamp()).'T230000Z');
+			$this->printLine('SUMMARY',$event->getSummary());
+			$this->printLine('DESCRIPTION',$wgServer."/index.php/".$pageTitle);
 			$this->printLine('END','VEVENT');
 			
 		}
