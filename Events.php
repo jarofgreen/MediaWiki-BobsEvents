@@ -47,6 +47,7 @@ $wgExtensionCredits['parserhook'][] = array(
 
 $wgAutoloadClasses['ExtEvents'] = dirname(__FILE__).'/Events.class.php';
 $wgAutoloadClasses['ExtSpecialEvents'] = dirname(__FILE__).'/SpecialEvents.class.php';
+$wgAutoloadClasses['ExtSpecialEventsExport'] = dirname(__FILE__).'/SpecialEventsExport.class.php';
 $wgAutoloadClasses['ExtSpecialClearEvents'] = dirname(__FILE__).'/SpecialClearEvents.class.php';
 $wgExtensionMessagesFiles['Events'] = dirname(__FILE__) . '/Events.i18n.php';
 $wgExtensionMessagesFiles['SpecialEvents'] = dirname(__FILE__) . '/Special.i18n.php';
@@ -72,6 +73,7 @@ function wfSetupEvents()
 	$wgHooks['OutputPageBeforeHTML'][] = array( &$wgEventsHookStub, 'outputPageBeforeHTML' );
 
 	$wgSpecialPages['SpecialEvents'] = 'ExtSpecialEvents';
+	$wgSpecialPages['SpecialEventsExport'] = 'ExtSpecialEventsExport';
 	$wgSpecialPageGroups['SpecialEvents'] = 'other';
 	$wgSpecialPages['SpecialClearEvents'] = 'ExtSpecialClearEvents';
         $wgSpecialPageGroups['SpecialClearEvents'] = 'other';	
