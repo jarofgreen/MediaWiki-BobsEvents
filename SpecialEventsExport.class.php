@@ -19,7 +19,7 @@ class ExtSpecialEventsExport extends SpecialPage
 	/** Invoked when the special page should be executed.
 	 */
 	public function execute( $par ) {
-		global $wgOut, $wgEventsOldAge, $wgEventsYoungAge, $wgUser;
+		global $wgOut, $wgEventsOldAge, $wgEventsYoungAge, $wgUser, $wgServer;
 
 		// Parse special page arguments
 		$args = array();
@@ -57,17 +57,24 @@ class ExtSpecialEventsExport extends SpecialPage
 		$wgOut->disable();
 		//header( 'Content-type: text/calendar; charset='.$wgInputEncoding );
 
-		echo 'BEGIN:VCALENDAR'."\r\n";
-		echo 'VERSION:2.0'."\r\n";
-		echo 'PRODID:'.'-//JarOfGreen//NONSGML MediaWiki BobEvents//EN'."\r\n"; 
+		$this->printLine('BEGIN','VCALENDAR');
+		$this->printLine('VERSION','2.0');
+		$this->printLine('PRODID','-//JarOfGreen//NONSGML MediaWiki BobEvents//EN'); 
+		
+		$pageTitleBuffer = array();
 		
 		while ($event = $dbr->fetchRow( $res )) {
 			
-			echo 'BEGIN:VEVENT'."\r\n";
-			echo 'DTSTART:'.str_replace("-", "", $event['date']).'T000000Z'."\r\n";
-			echo 'DTEND:'.str_replace("-", "", $event['date']).'T230000Z'."\r\n";
-			echo 'DESCRIPTION:'.$event['description']."\r\n";
-			echo 'END:VEVENT'."\r\n";
+			$pageTitle = isset($pageTitleBuffer[$event['page_id']]) ? $pageTitleBuffer[$event['page_id']] : null;
+			if (!$pageTitle) {
+				$pageTitle = $pageTitleBuffer[$event['page_id']] = Title::nameOf($event['page_id']);
+			}
+			
+			$this->printLine('BEGIN','VEVENT');
+			$this->printLine('DTSTART',str_replace("-", "", $event['date']).'T000000Z');
+			$this->printLine('DTEND',str_replace("-", "", $event['date']).'T230000Z');
+			$this->printLine('DESCRIPTION',$event['description']. " ".$wgServer."/index.php/".$pageTitle);
+			$this->printLine('END','VEVENT');
 			
 		}
 		
@@ -76,5 +83,10 @@ class ExtSpecialEventsExport extends SpecialPage
 		
 	}
 
+	private function printLine($key,$value) {
+		// TODO should br wrapping lines at a certain length and encoding newlines in the value.
+		echo $key.':'.$value."\r\n";
+	}
+	
 }
 
