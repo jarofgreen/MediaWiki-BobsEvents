@@ -1,0 +1,43 @@
+1. Licensing
+2. How to install
+3. Database
+3.1 PostgreSQL
+3.2 MySQL
+
+1. Licensing
+Licensed under GNU GPL. See COPYING for more license information.
+
+2. How to install
+   a. Download this tarball and extract the contents to $IP/extensions/Events/
+      where $IP is your root wiki install
+   b. Add 'require( "extensions/Events/Events.php");' to your
+      LocalSettings (without the single quotes)
+   c. Enjoy
+
+3. Database
+
+Before using this extension, you need to initialize your database.
+
+3.1 PostgreSQL
+
+DROP TYPE IF EXISTS eventVisibility CASCADE;
+DROP TABLE IF EXISTS events CASCADE;
+CREATE TYPE eventVisibility AS ENUM ('public', 'connected', 'invisible');
+CREATE TABLE events (
+    page_id integer NOT NULL DEFAULT 0,
+    date date NOT NULL,
+    description text NOT NULL,
+    visibility eventVisibility DEFAULT 'invisible' NOT NULL
+);
+
+
+3.2 MySQL
+
+DROP TABLE IF EXISTS events CASCADE;
+CREATE TABLE events (
+	page_id INT UNSIGNED NOT NULL DEFAULT 0,
+	date DATE NOT NULL DEFAULT '0000-00-00',
+	description TEXT NOT NULL,
+	visibility ENUM('public','connected','invisible') DEFAULT 'invisible' NOT NULL,
+	KEY date_idx (page_id,date)
+);
