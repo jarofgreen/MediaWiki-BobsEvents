@@ -148,29 +148,12 @@ class ExtEventUtil
 	 */
 	public static function parseText($text)
 	{
-		$events = array();
-		$lines = preg_split("/[\n\r\f]+/s", trim($text));
-		foreach($lines as $line) {
-			if (preg_match("/^\\s*([0-9]+)\\-([0-9]+)\\-([0-9]+)\\s*(.*?)\\s*$/s", $line, $matches)) {
-				$timestamp = mktime(
-					0, // hour
-					0, // min
-					0, // second
-					intval($matches[2]), // month
-					intval($matches[3]), // day
-					intval($matches[1])); // year
-				$dateText = date('Ymd', $timestamp);
-				$events[] = array(
-					'year' => intval($matches[1]),
-					'month' => intval($matches[2]),
-					'day' => intval($matches[3]),
-					'text' => $matches[4],
-					'timestamp' => $timestamp,
-					'date' => $dateText,
-				);
-			}
-		}
-		return $events;
+
+		
+		$event = new ExtEventObject();
+		$event->parseText($text);
+		return $event;
+		
 	}
 
 	/** Build and replies the HTML code which is corresponding

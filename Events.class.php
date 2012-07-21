@@ -94,21 +94,19 @@ class ExtEvents
 		//    avoid <nowiki> parsing
 		$text1 = Parser::extractTagsAndParams(array('nowiki'), $text, $matches1 );
 		//    parse <events>
-                Parser::extractTagsAndParams(array('events'), $text1, $matches2 );
-                foreach( $matches2 as $marker => $data ) {
-                        list( $element, $content, $params, $tag ) = $data;
-			$events = ExtEventUtil::parseText($content);
-			foreach($events as $event) {
-				// put back <nowiki> tags
-				foreach($matches1 as $nowikikey => $nowikidesc) {
-					$event['text'] = str_replace(
-						$nowikikey,
-						$nowikidesc[3],
-						$event['text']);
-				}
-				$this->events[] = $event;
+		Parser::extractTagsAndParams(array('events'), $text1, $matches2 );
+		foreach( $matches2 as $marker => $data ) {
+			list( $element, $content, $params, $tag ) = $data;
+			$event = ExtEventUtil::parseText($content);
+			// put back <nowiki> tags
+			foreach($matches1 as $nowikikey => $nowikidesc) {
+				$event->setDescription(str_replace(
+					$nowikikey,
+					$nowikidesc[3],
+					$event->getDescription()));
 			}
-                }
+			$this->events[] = $event;
+		}
 
 		$dbr =& ExtEventUtil::getDatabase(EVENTS_DB_ACCESS_ALL);
 
@@ -120,8 +118,8 @@ class ExtEvents
 	        foreach ($this->events as $event) {
 			$dbevent = array(
 				'page_id' => $pageId,
-				'description' => $event['text'],
-				'date' => $event['date'],
+				'description' => $event->getDescription(),
+				'date' => date("Ymd",$event->getStartTimeStamp()),
 			);
                 	$dbr->insert(
                         	'events',
@@ -164,25 +162,21 @@ class ExtEvents
 
 		$showEvents = (isset($argv['show']) && "true"==$argv['show']);
 
-		$events = ExtEventUtil::parseText($text);
+		$event = ExtEventUtil::parseText($text);
 
 		$out = '';
 
 		$this->clearEventBuffer();
-		$this->events = $events;
+		$this->events[] = $event;
 
 		if ($showEvents) {
-			foreach($events as $event) {
-				if (ExtEventUtil::isVisible($event)) {
-					$style = $this->getAdditionalStyle($event);
-					$out .= "<li class=\"eventEntry $style\" id=\"event#".ExtEventUtil::formatDate($event,true)."\">".
-						"<span class=\"eventDate $style\">".
-						ExtEventUtil::formatDate($event, true).
-						"</span><span class=\"eventText $style\">".
-						$parser->recursiveTagParse(trim($event['text'])).
-						"</span></li>\n";
-				}
-			}
+			$style = $this->getAdditionalStyle($event);
+			$out .= "<li class=\"eventEntry $style\" id=\"event#".ExtEventUtil::formatTimestamp($event->getStartTimeStamp(),true)."\">".
+				"<span class=\"eventDate $style\">".
+				ExtEventUtil::formatTimestamp($event->getStartTimeStamp(), true).
+				"</span><span class=\"eventText $style\">".
+				$parser->recursiveTagParse(trim($event->getDescription())).
+				"</span></li>\n";
 
 			if ($out) {
 				$out = "<ul class=\"eventList\" id=\"eventList\">\n$out</ul>\n";

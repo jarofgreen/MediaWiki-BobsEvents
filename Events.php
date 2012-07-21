@@ -46,6 +46,7 @@ $wgExtensionCredits['parserhook'][] = array(
 );
 
 $wgAutoloadClasses['ExtEvents'] = dirname(__FILE__).'/Events.class.php';
+$wgAutoloadClasses['ExtEventObject'] = dirname(__FILE__).'/EventObject.class.php';
 $wgAutoloadClasses['ExtSpecialEvents'] = dirname(__FILE__).'/SpecialEvents.class.php';
 $wgAutoloadClasses['ExtSpecialEventsExport'] = dirname(__FILE__).'/SpecialEventsExport.class.php';
 $wgAutoloadClasses['ExtSpecialClearEvents'] = dirname(__FILE__).'/SpecialClearEvents.class.php';
