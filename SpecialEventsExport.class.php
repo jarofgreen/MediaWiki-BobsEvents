@@ -59,7 +59,7 @@ class ExtSpecialEventsExport extends SpecialPage
 
 		echo 'BEGIN:VCALENDAR'."\r\n";
 		echo 'VERSION:2.0'."\r\n";
-		echo 'PRODID:'.'NOIDEA'."\r\n"; 
+		echo 'PRODID:'.'-//JarOfGreen//NONSGML MediaWiki BobEvents//EN'."\r\n"; 
 		
 		while ($event = $dbr->fetchRow( $res )) {
 			
