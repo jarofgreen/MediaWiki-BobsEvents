@@ -1,6 +1,6 @@
 <?php
 /**
- * English.
+ * French.
  *
  * Stephane Galland <galland@arakhne.org>
  *
@@ -12,7 +12,7 @@
  *   values which will be dynamicalled replaced by text given mediawiki.
  *   The semantics of these parameters depend on the semantic of the message.
  */
-$messages['en'] = array(
+$messages['fr'] = array(
 	'specialevents'		=>		'Liste des événements',
 	'specialevents_empty_list'	=>	'Pas d\'événement dans la liste',
 	'specialevents_header_date'	=>	'Date',
