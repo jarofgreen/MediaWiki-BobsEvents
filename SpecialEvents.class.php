@@ -1,6 +1,5 @@
 <?php
 
-require_once('SpecialPage.php');
 require_once(dirname(__FILE__).'/EventUtil.php');
 
 class ExtSpecialEvents extends SpecialPage
@@ -36,7 +35,7 @@ class ExtSpecialEvents extends SpecialPage
 		// Build SQL query options
 		$options = array( 'ORDER BY'=>'date ASC' );
 
-		if ($args['limit']) {
+		if (isset($args['limit']) && $args['limit']) {
                 	$options['LIMIT'] = $args['limit'];
 		}
 
@@ -69,7 +68,7 @@ class ExtSpecialEvents extends SpecialPage
 		while ($event = $dbr->fetchRow( $res )) {
 
 			if (ExtEventUtil::isVisible($event)) {
-				$pageTitle = $pageTitleBuffer[$event['page_id']];
+				$pageTitle = isset($pageTitleBuffer[$event['page_id']]) ? $pageTitleBuffer[$event['page_id']] : null;
 				if (!$pageTitle) {
 					 $pageTitle = $pageTitleBuffer[$event['page_id']] =
 						Title::nameOf($event['page_id']);

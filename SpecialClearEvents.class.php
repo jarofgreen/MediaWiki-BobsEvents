@@ -1,6 +1,5 @@
 <?php
 
-require_once('SpecialPage.php');
 require_once(dirname(__FILE__).'/EventUtil.php');
 
 class ExtSpecialClearEvents extends SpecialPage
