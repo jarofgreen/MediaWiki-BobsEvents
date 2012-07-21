@@ -64,11 +64,23 @@ function wfSetupEvents()
 	$wgHooks['OutputPageBeforeHTML'][] = array( &$wgEventsHookStub, 'outputPageBeforeHTML' );
 
 	$wgSpecialPages['SpecialEvents'] = 'ExtSpecialEvents';
-	$wgSpecialPages['SpecialEventsExport'] = 'ExtSpecialEventsExport';
 	$wgSpecialPageGroups['SpecialEvents'] = 'other';
 	$wgSpecialPages['SpecialClearEvents'] = 'ExtSpecialClearEvents';
-        $wgSpecialPageGroups['SpecialClearEvents'] = 'other';	
+	$wgSpecialPageGroups['SpecialClearEvents'] = 'other';	
+	$wgSpecialPages['SpecialEventsExport'] = 'ExtSpecialEventsExport';
+	$wgSpecialPageGroups['SpecialEventsExport'] = 'other';	
 }
+
+function expandEvents( $input, array $args, Parser $parser, PPFrame $frame ) {
+	$event = new ExtEventObject();
+	$event->parseText($input);
+
+	$out = "<div>";
+	$out .= "Summary: ".htmlspecialchars($event->getSummary());
+	$out .= "</div>";
+	return $out;
+}
+		
 
 /**
  * Stub class to defer loading of the bulk of the code until a function is
@@ -81,13 +93,7 @@ class Events_HookStub
 
 	public function registerParser( $parser )
 	{
-		require( dirname(__FILE__) . '/Events.mapping.magic.php');
-		foreach($tagMapping as $magicWord => $phpFunction) {
-			$parser->setHook( $magicWord, array( &$this, $phpFunction ) );
-		}
-		foreach($functionMapping as $magicWord => $phpFunction) {
-			$parser->setFunctionHook( $magicWord, array( &$this, $phpFunction ) );
-                }
+		$parser->setHook( 'event', 'expandEvents' );
 		return true;
 	}
 

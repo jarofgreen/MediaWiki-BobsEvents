@@ -94,7 +94,7 @@ class ExtEvents
 		//    avoid <nowiki> parsing
 		$text1 = Parser::extractTagsAndParams(array('nowiki'), $text, $matches1 );
 		//    parse <events>
-		Parser::extractTagsAndParams(array('events'), $text1, $matches2 );
+		Parser::extractTagsAndParams(array('event'), $text1, $matches2 );
 		foreach( $matches2 as $marker => $data ) {
 			list( $element, $content, $params, $tag ) = $data;
 			$event = ExtEventUtil::parseText($content);
@@ -147,46 +147,7 @@ class ExtEvents
 		return true;
 	}
 
-	/** Expand <event/>
-	 * Display a list of events.
-	 *
-	 * Parameters:
-	 *   show="true|false"
-	 *       indicates if the list of events should be displayed and where
-	 *       (default is 'false').
-	 *
-	 * This tag contains a list of events.
-         */
-        public function expandEvents( $text='', $argv='', $parser=null )
-        {
-		wfProfileIn( __METHOD__ );
-
-		$showEvents = (isset($argv['show']) && "true"==$argv['show']);
-
-		$event = ExtEventUtil::parseText($text);
-
-		$out = '';
-
-		$this->clearEventBuffer();
-		$this->events[] = $event;
-
-		if ($showEvents) {
-			$style = $this->getAdditionalStyle($event);
-			$out .= "<li class=\"eventEntry $style\" id=\"event#".ExtEventUtil::formatTimestamp($event->getStartTimeStamp(),true)."\">".
-				"<span class=\"eventDate $style\">".
-				ExtEventUtil::formatTimestamp($event->getStartTimeStamp(), true).
-				"</span><span class=\"eventText $style\">".
-				$parser->recursiveTagParse(trim($event->getDescription())).
-				"</span></li>\n";
-
-			if ($out) {
-				$out = "<ul class=\"eventList\" id=\"eventList\">\n$out</ul>\n";
-			}
-		}
-
-		wfProfileOut( __METHOD__ );
-		return $out;
-	}
+	
 
 	/** Clear the buffer of events.
 	 */
