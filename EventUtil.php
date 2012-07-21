@@ -137,21 +137,11 @@ class ExtEventUtil
 	}
 
 	/** Replies if the given event description is visible or not.
-	 * This function takes the visibility flag; and if connected
-	 * is set, check if a user is connected or not.
+	 * But now all events are public!
 	 */
 	public static function isVisible($eventDescription)
 	{
-		global $wgUser;
-		if ($eventDescription['visibility'] == 'important'
-		    || $eventDescription['visibility'] == 'public')
-			return true;
-		//mg_die($eventDescription);
-		if ($eventDescription['visibility'] == 'connected') {
-			//mg_die($wgUser);
-			if ($wgUser->getId()) return true;
-		}
-		return false;
+		return true;
 	}
 
 	/** Parse the given text to extract events.
@@ -161,7 +151,7 @@ class ExtEventUtil
 		$events = array();
 		$lines = preg_split("/[\n\r\f]+/s", trim($text));
 		foreach($lines as $line) {
-			if (preg_match("/^\\s*([0-9]+)\\-([0-9]+)\\-([0-9]+)\\s*([:#\\-!])\\s*(.*?)\\s*$/s", $line, $matches)) {
+			if (preg_match("/^\\s*([0-9]+)\\-([0-9]+)\\-([0-9]+)\\s*(.*?)\\s*$/s", $line, $matches)) {
 				$timestamp = mktime(
 					0, // hour
 					0, // min
@@ -170,16 +160,11 @@ class ExtEventUtil
 					intval($matches[3]), // day
 					intval($matches[1])); // year
 				$dateText = date('Ymd', $timestamp);
-				$visibility = 'public';
-				if ($matches[4]=='!') $visibility = 'important';
-				else if ($matches[4]=='#') $visibility = 'connected';
-				else if ($matches[4]=='-') $visibility = 'invisible';
 				$events[] = array(
 					'year' => intval($matches[1]),
 					'month' => intval($matches[2]),
 					'day' => intval($matches[3]),
-					'visibility' => $visibility,
-					'text' => $matches[5],
+					'text' => $matches[4],
 					'timestamp' => $timestamp,
 					'date' => $dateText,
 				);
@@ -213,10 +198,9 @@ class ExtEventUtil
                         $options = array( 'ORDER BY'=>'date ASC' );
                         $res = $dbr->select(
                                 'events',
-                                array('page_id','date','description','visibility'),
+                                array('page_id','date','description'),
                                 '( (date-current_date) <= '.$youngAge.' ) AND '.
-                                '( (date-current_date) >= '.$oldAge.' ) AND '.
-                                '(visibility=\'important\')',
+                                '( (date-current_date) >= '.$oldAge.' ) ',
                                 'Database::select',
                                 $options);
                         if ($res) {

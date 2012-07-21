@@ -122,7 +122,6 @@ class ExtEvents
 				'page_id' => $pageId,
 				'description' => $event['text'],
 				'date' => $event['date'],
-				'visibility' => $event['visibility'],
 			);
                 	$dbr->insert(
                         	'events',
@@ -205,10 +204,6 @@ class ExtEvents
 	 */
 	private function getAdditionalStyle($event)
 	{
-		if ($event['visibility']=='deleted')
-			return "invisibleEvent";
-		if ($event['visility']=='connected')
-			return "protectedEvent";
 		return "publicEvent";
 	}
 

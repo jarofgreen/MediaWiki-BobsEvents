@@ -51,7 +51,7 @@ class ExtSpecialEvents extends SpecialPage
 		// Run the SQL.
 	        $res = $dbr->select(
         	        'events', 
-                	array('page_id','date','description','visibility'), 
+                	array('page_id','date','description'), 
 	                '(date-current_date <= '.$youngAge.' ) and (date-current_date >= '.$oldAge.')',
         	        'Database::select',
                 	$options);
