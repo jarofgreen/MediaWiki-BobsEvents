@@ -9,4 +9,3 @@ $tagMapping = array(
 $functionMapping = array(
 );
 
-?>

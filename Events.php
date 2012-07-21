@@ -151,4 +151,3 @@ class Events_HookStub
 	}
 }
 
-?>

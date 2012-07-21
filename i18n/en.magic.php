@@ -19,4 +19,4 @@ $magicWords['en'] = array(
 	'noticeevents'		=>	array( '0', 'noticeevents' ),
 );
 
-?>
+
