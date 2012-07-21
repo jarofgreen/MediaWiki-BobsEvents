@@ -57,21 +57,21 @@ class ExtSpecialEventsExport extends SpecialPage
 		$wgOut->disable();
 		//header( 'Content-type: text/calendar; charset='.$wgInputEncoding );
 
-		echo 'BEGIN:VCALENDAR'."\n";
-		echo 'VERSION:2.0'."\n";
-		echo 'PRODID:'.'NOIDEA'."\n"; 
+		echo 'BEGIN:VCALENDAR'."\r\n";
+		echo 'VERSION:2.0'."\r\n";
+		echo 'PRODID:'.'NOIDEA'."\r\n"; 
 		
 		while ($event = $dbr->fetchRow( $res )) {
 			
-			echo 'BEGIN:VEVENT'."\n";
-			echo 'DTSTART:'.str_replace("-", "", $event['date']).'T000000Z'."\n";
-			echo 'DTEND:'.str_replace("-", "", $event['date']).'T230000Z'."\n";
-			echo 'DESCRIPTION:'.$event['description']."\n";
-			echo 'END:VEVENT'."\n";
+			echo 'BEGIN:VEVENT'."\r\n";
+			echo 'DTSTART:'.str_replace("-", "", $event['date']).'T000000Z'."\r\n";
+			echo 'DTEND:'.str_replace("-", "", $event['date']).'T230000Z'."\r\n";
+			echo 'DESCRIPTION:'.$event['description']."\r\n";
+			echo 'END:VEVENT'."\r\n";
 			
 		}
 		
-		echo 'END:VCALENDAR'."\n";
+		echo 'END:VCALENDAR'."\r\n";
 
 		
 	}
