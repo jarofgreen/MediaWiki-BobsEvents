@@ -22,18 +22,23 @@ class ExtEventObject {
 	function getDeleted() { return $this->deleted; }
 	
 	function parseText($text) {
+		global $wfEventsDefaultTimeZone;
 		$data = parse_ini_string($text);
+		
+		$timeZone = new DateTimeZone($wfEventsDefaultTimeZone);
 		
 		if (isset($data['Summary'])) {
 			$this->summary = $data['Summary'];
 		}
 		
 		if (isset($data['Start'])) {
-			$this->startTimeStamp = strtotime($data['Start']);
+			$obj = new DateTime($data['Start'],$timeZone);
+			$this->startTimeStamp = $obj->getTimestamp();
 		}
 		
 		if (isset($data['End'])) {
-			$this->endTimeStamp = strtotime($data['End']);
+			$obj = new DateTime($data['End'],$timeZone);
+			$this->endTimeStamp = $obj->getTimestamp();
 		}
 		
 	}
@@ -42,8 +47,8 @@ class ExtEventObject {
 		$this->page_id = $data['page_id'];
 		$this->deleted = isset($data['deleted']) ? $data['deleted'] : 0;
 		$this->summary = $data['summary'];
-		$this->startTimeStamp = strtotime($data['start_at']);
-		$this->endTimeStamp = strtotime($data['end_at']);
+		$this->startTimeStamp = $data['start_at'];
+		$this->endTimeStamp = $data['end_at'];
 	}
 	
 }

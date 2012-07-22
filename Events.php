@@ -10,7 +10,8 @@ if ( !defined( 'MEDIAWIKI' ) ) {
  * extension file.
  */
 
-/** ... actually, none at the moment **/
+/** TimeZone used for all events **/
+$wfEventsDefaultTimeZone = "Europe/London";
 
 /** REGISTRATION */
 $wgExtensionFunctions[] = 'wfSetupEvents';

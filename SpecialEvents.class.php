@@ -43,7 +43,7 @@ class ExtSpecialEvents extends SpecialPage
 		$res = $dbr->select(
 				'events', 
 				array('page_id','start_at','end_at','summary'), 
-				'(end_at > current_date AND deleted=0)',
+				'(end_at > '.time().' AND deleted=0)',
 				'Database::select',
 				$options);
 		if (!$res) {

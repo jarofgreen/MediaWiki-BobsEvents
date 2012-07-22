@@ -43,9 +43,12 @@ class ExtSpecialEventsExport extends SpecialPage
 		$res = $dbr->select(
 				'events', 
 				array('page_id','start_at','end_at','summary','deleted'), 
-				'(end_at > current_date)',
+				'(end_at > '.time().')',
 				'Database::select',
 				$options);			 
+
+		
+		$dateTimeObj = new DateTime("now",new DateTimeZone(("UTC")));
 
 
 		$wgOut->disable();
@@ -69,8 +72,14 @@ class ExtSpecialEventsExport extends SpecialPage
 			
 			$this->printLine('BEGIN','VEVENT');
 			$this->printLine('UID','p'.$event->getPageId().'-s'.$event->getStartTimeStamp().'@'.$serverNameOnly);
-			$this->printLine('DTSTART',str_replace("-", "", $event->getStartTimeStamp()).'T000000Z');
-			$this->printLine('DTEND',str_replace("-", "", $event->getEndTimeStamp()).'T230000Z');
+			
+			
+			$dateTimeObj->setTimestamp($event->getStartTimeStamp());
+			$this->printLine('DTSTART',$dateTimeObj->format("Ymd")."T".$dateTimeObj->format("His")."Z");
+
+			$dateTimeObj->setTimestamp($event->getEndTimeStamp());
+			$this->printLine('DTEND',$dateTimeObj->format("Ymd")."T".$dateTimeObj->format("His")."Z");
+
 			if ($event->getDeleted()) {
 				$this->printLine('METHOD', 'CANCEL');
 				$this->printLine('STATUS', 'CANCELLED');

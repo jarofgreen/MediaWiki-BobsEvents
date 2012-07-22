@@ -121,19 +121,19 @@ class ExtEvents
 			$res = $dbr->select(
 				'events', 
 				array('page_id'), 
-				"(page_id = ".$pageId." AND start_at='".date("Y-m-d H:i:s",$event->getStartTimeStamp())."')");
+				"(page_id = ".$pageId." AND start_at='".$event->getStartTimeStamp()."')");
 			if ($res && $res->numRows() > 0) {
 				$dbr->update(
 						'events',
 						array( 'deleted' => 0, 'summary'=>$event->getSummary() ),
-						array('page_id'=>$pageId,'start_at'=>date("Y-m-d H:i:s",$event->getStartTimeStamp()))
+						array('page_id'=>$pageId,'start_at'=>$event->getStartTimeStamp())
 					);				
 			} else {
 				$dbevent = array(
 					'page_id' => $pageId,
 					'summary' => $event->getSummary(),
-					'start_at' => date("Y-m-d H:i:s",$event->getStartTimeStamp()),
-					'end_at' => date("Y-m-d H:i:s",$event->getEndTimeStamp()),
+					'start_at' => $event->getStartTimeStamp(),
+					'end_at' => $event->getEndTimeStamp(),
 				);
 				$dbr->insert('events',$dbevent);
 			}
