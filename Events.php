@@ -60,11 +60,22 @@ function wfSetupEvents()
 }
 
 function expandEvents( $input, array $args, Parser $parser, PPFrame $frame ) {
+	global $wfEventsDefaultTimeZone;
 	$event = new ExtEventObject();
 	$event->parseText($input);
 
-	$out = "<div>";
-	$out .= "Summary: ".htmlspecialchars($event->getSummary());
+	$dateTimeObj = new DateTime("now",new DateTimeZone($wfEventsDefaultTimeZone));
+	
+	
+	$out = '<div class="catlinks">';
+	$out .= "Event: ".htmlspecialchars($event->getSummary());
+	
+	$dateTimeObj->setTimestamp($event->getStartTimeStamp());
+	$out .= " From ". $dateTimeObj->format("g:ia D jS M Y");
+	
+	$dateTimeObj->setTimestamp($event->getEndTimeStamp());
+	$out .= " To ". $dateTimeObj->format("g:ia D jS M Y");
+			
 	$out .= "</div>";
 	return $out;
 }

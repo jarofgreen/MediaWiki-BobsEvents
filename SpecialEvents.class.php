@@ -22,7 +22,7 @@ class ExtSpecialEvents extends SpecialPage
 	/** Invoked when the special page should be executed.
 	 */
 	public function execute( $par ) {
-		global $wgOut, $wgUser;
+		global $wgOut, $wgUser, $wfEventsDefaultTimeZone;
 
 		// Parse special page arguments
 		$args = array();
@@ -52,7 +52,8 @@ class ExtSpecialEvents extends SpecialPage
 		}
 
 		$out = '';
-
+		$dateTimeObj = new DateTime("now",new DateTimeZone($wfEventsDefaultTimeZone));
+	
 		// Generate HTML list
 		$pageTitleBuffer = array();
 
@@ -71,21 +72,22 @@ class ExtSpecialEvents extends SpecialPage
 
 			if ($out) $out .= "|-\n";
 
-			$out .= "| width=5% | ".date("r",$event->getStartTimeStamp())."\n";
-			$out .= "| width=5% | ".date("r",$event->getEndTimeStamp())."\n";
 			$out .= "| $text\n";
+			$out .= "| width=20% | \n";
+			
+			$out .= "|-\n";
+			
+			$dateTimeObj->setTimestamp($event->getStartTimeStamp());
+			$out .= " | From ". $dateTimeObj->format("g:ia D jS M Y");
+
+			$dateTimeObj->setTimestamp($event->getEndTimeStamp());
+			$out .= " To ". $dateTimeObj->format("g:ia D jS M Y")."\n";
+
 			$out .= "| width=20% | $pagelink\n";
-	
 		}
 
 		if ($out) {
 			$out = "{| class=\"frametable\"\n".
-				"! ".wfMsgExt(
-					'specialevents_header_date',
-		                        array( 'escape', 'parsemag', 'content' ))."\n".
-				"! ".wfMsgExt(
-					'specialevents_header_date',
-		                        array( 'escape', 'parsemag', 'content' ))."\n".
 				"! ".wfMsgExt(
                                         'specialevents_header_text',
                                         array( 'escape', 'parsemag', 'content' ))."\n".
