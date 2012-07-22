@@ -21,6 +21,9 @@ class ExtSpecialEventsExport extends SpecialPage
 	public function execute( $par ) {
 		global $wgOut, $wgUser, $wgServer;
 
+		$serverNameOnly = $wgServer;
+		if (substr($serverNameOnly,0,7) == "http://") $serverNameOnly = substr($serverNameOnly,7);
+		
 		// Parse special page arguments
 		$args = array();
 		parse_str($par, $args);
@@ -65,6 +68,7 @@ class ExtSpecialEventsExport extends SpecialPage
 			}
 			
 			$this->printLine('BEGIN','VEVENT');
+			$this->printLine('UID','p'.$event->getPageId().'-s'.$event->getStartTimeStamp().'@'.$serverNameOnly);
 			$this->printLine('DTSTART',str_replace("-", "", $event->getStartTimeStamp()).'T000000Z');
 			$this->printLine('DTEND',str_replace("-", "", $event->getEndTimeStamp()).'T230000Z');
 			if ($event->getDeleted()) {
