@@ -68,7 +68,7 @@ function expandEvents( $input, array $args, Parser $parser, PPFrame $frame ) {
 	
 	
 	$out = '<div class="catlinks">';
-	$out .= "Event: ".htmlspecialchars($event->getSummary());
+	$out .= "Event ".htmlspecialchars($event->getSummary());
 	
 	$dateTimeObj->setTimestamp($event->getStartTimeStamp());
 	$out .= " From ". $dateTimeObj->format("g:ia D jS M Y");
