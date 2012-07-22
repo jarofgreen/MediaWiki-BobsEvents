@@ -66,13 +66,13 @@ class ExtSpecialEvents extends SpecialPage
 				$pageTitle = $pageTitleBuffer[$event->getPageId()] = Title::nameOf($event->getPageId());
 			}
 
-			$date = ExtEventUtil::formatTimestamp($event->getStartTimeStamp(),true);
 			$text = preg_replace("/[\n\r\f]+/s", '<br>', $event->getSummary());
 			$pagelink = "[[$pageTitle|&rarr; $pageTitle]]";
 
 			if ($out) $out .= "|-\n";
 
-			$out .= "| width=5% | ".$date."\n";
+			$out .= "| width=5% | ".date("r",$event->getStartTimeStamp())."\n";
+			$out .= "| width=5% | ".date("r",$event->getEndTimeStamp())."\n";
 			$out .= "| $text\n";
 			$out .= "| width=20% | $pagelink\n";
 	
@@ -80,6 +80,9 @@ class ExtSpecialEvents extends SpecialPage
 
 		if ($out) {
 			$out = "{| class=\"frametable\"\n".
+				"! ".wfMsgExt(
+					'specialevents_header_date',
+		                        array( 'escape', 'parsemag', 'content' ))."\n".
 				"! ".wfMsgExt(
 					'specialevents_header_date',
 		                        array( 'escape', 'parsemag', 'content' ))."\n".
