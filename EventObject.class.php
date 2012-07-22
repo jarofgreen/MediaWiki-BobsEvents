@@ -21,7 +21,7 @@ class ExtEventObject {
 	function getPageId() { return $this->page_id; }
 	function getDeleted() { return $this->deleted; }
 	
-	function parseText($text) {
+	function parseText($text, $pageTitle=null) {
 		global $wfEventsDefaultTimeZone;
 		$data = parse_ini_string($text);
 		
@@ -29,6 +29,9 @@ class ExtEventObject {
 		
 		if (isset($data['Summary'])) {
 			$this->summary = $data['Summary'];
+		}
+		if (!$this->summary && $pageTitle) {
+			$this->summary = $pageTitle;
 		}
 		
 		if (isset($data['Start'])) {

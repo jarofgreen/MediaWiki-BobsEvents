@@ -87,6 +87,7 @@ class ExtEvents
 		global $wgParser;
 		// Retreive page informations
 		$pageId = $article->getID();
+		$pageTitle = $article->getTitle()->getText();
 
 		// Rebuild the $events array (in case we're on a <calendar> page)
                 $this->clearEventBuffer();
@@ -97,7 +98,8 @@ class ExtEvents
 		Parser::extractTagsAndParams(array('event'), $text1, $matches2 );
 		foreach( $matches2 as $marker => $data ) {
 			list( $element, $content, $params, $tag ) = $data;
-			$event = ExtEventUtil::parseText($content);
+			$event = new ExtEventObject();
+			$event->parseText($content, $pageTitle);
 			// put back <nowiki> tags
 			foreach($matches1 as $nowikikey => $nowikidesc) {
 				$event->setDescription(str_replace(
