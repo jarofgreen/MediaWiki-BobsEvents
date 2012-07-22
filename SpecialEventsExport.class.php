@@ -52,7 +52,7 @@ class ExtSpecialEventsExport extends SpecialPage
 
 
 		$wgOut->disable();
-		//header( 'Content-type: text/calendar; charset='.$wgInputEncoding );
+		header( 'Content-type: text/calendar;' );
 
 		$this->printLine('BEGIN','VCALENDAR');
 		$this->printLine('VERSION','2.0');
