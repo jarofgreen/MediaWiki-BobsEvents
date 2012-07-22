@@ -53,7 +53,10 @@ class ExtEventObject {
 		$this->startTimeStamp = $data['start_at'];
 		$this->endTimeStamp = $data['end_at'];
 	}
-	
+
+	function isValid() {
+		return (Boolean)$this->startTimeStamp;
+	}
 }
 
 
