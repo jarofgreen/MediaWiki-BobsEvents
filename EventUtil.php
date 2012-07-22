@@ -7,7 +7,6 @@ define('EVENTS_DB_ACCESS_ALL',			0xFF);
 class ExtEventUtil
 {
 
-	private static $popupHTMLText = null;
 
 
 	/** Generates Error message from html text */
@@ -63,16 +62,14 @@ class ExtEventUtil
                 //
                 if ($type == "DatabasePostgres") {
 			$query =        'DROP TYPE IF EXISTS eventVisibility CASCADE;'.
-                                        'DROP TABLE IF EXISTS events CASCADE;'.
-                                        'DROP TABLE IF EXISTS eventglobal CASCADE;';
+                                        'DROP TABLE IF EXISTS events CASCADE;';
 			
 		}
 		//
                 //================= MYSQL
                 //
                 elseif ($type == "DatabaseMysql") {
-			$query =        'DROP TABLE IF EXISTS events CASCADE;'.
-                                        'DROP TABLE IF EXISTS eventglobal CASCADE;';
+			$query =        'DROP TABLE IF EXISTS events CASCADE;';
 		}
 		//
                 //=================== OTHERS DB
@@ -154,98 +151,6 @@ class ExtEventUtil
 		$event->parseText($text);
 		return $event;
 		
-	}
-
-	/** Build and replies the HTML code which is corresponding
-	* to the event popup box.
-	* If $parser parameter is null, the event descriptions are
-	* not recursively parsed.
-	*/
-	public static function computeEventPopupBoxHTML(&$parser = null)
-	{
-		global $wgEventExtensionRenderImportantEventBox;
-                global $wgEventsCloseButtonIcon;
-                global $wgUser;
-		$skin = ($wgUser) ? $wgUser->getSkin() : null;
-                if ($wgEventExtensionRenderImportantEventBox
-                     && ($skin!=null)
-                     && (method_exists($skin,'isEventsExtensionImportantEventEnabled'))
-                     && ($skin->isEventsExtensionImportantEventEnabled())
-                     && !isset(self::$popupHTMLText)) {
-                        $dbr =& ExtEventUtil::getDatabase();
-
-                        $oldAge = -30;
-                        $youngAge = 365;
-
-                        $options = array( 'ORDER BY'=>'date ASC' );
-                        $res = $dbr->select(
-                                'events',
-                                array('page_id','date','description'),
-                                '( (date-current_date) <= '.$youngAge.' ) AND '.
-                                '( (date-current_date) >= '.$oldAge.' ) ',
-                                'Database::select',
-                                $options);
-                        if ($res) {
-                                $eventlist = '';
-                                while ($event = $dbr->fetchRow( $res )) {
-                                        if (ExtEventUtil::isVisible($event)) {
-                                                if ($event['visibility']=='important') {
-                                                        $type1 = 'eventPopupImportantDate';
-                                                        $type2 = 'eventPopupImportantDescription';
-                                                }
-                                                else {
-                                                        $type1 = 'eventPopupDate';
-                                                        $type2 = 'eventPopupDescription';
-                                                }
-                                                $date = ExtEventUtil::formatDateText($event['date'],true);
-                                                $description = $event['description'];
-						if ($parser!=null) {
-							$description = $parser->recursiveTagParse($description);
-						}
-                                                $eventlist .=
-                                                        "<span class=\"$type1\">".
-                                                        $date.
-                                                        "</span><span class=\"$type2\">".
-                                                        $description.
-                                                        "</span><br>";
-                                        }
-                                }
-                                if ($eventlist) {
-					self::$popupHTMLText =
-                                        	"<div class=\"eventPopup\">".
-                                     		/*"<div class=\"closeButton\">".
-                                           	"[".
-                                               	"X".
-                                               	"]".
-                                               	"</div>".*/
-                                               	$eventlist.
-                                               	"</div>";
-                                }
-                        }
-		}
-		return self::$popupHTMLText;
-	}
-
-	/** Replies the HTML code which is corresponding
-	 * to the event popup box. This function does
-	 * not compute this HTML code. It simply replies
-	 * it. To compute the HTML code please invoke
-	 * computeEventPopupBoxHTML() before invoking
-	 * this function.
-	 */
-	public static function getEventPopupBoxHTML()
-	{
-		if (!isset(self::$popupHTMLText)) {
-			$dbr =& ExtEventUtil::getDatabase(EVENTS_DB_ACCESS_EVENTGLOBAL);
-			$res = $dbr->select('eventglobal', array('popuphtml'));
-			if ($res && ($text = $dbr->fetchRow( $res ))) {
-				self::$popupHTMLText = $text['popuphtml'];
-			}
-			else {
-				self::$popupHTMLText = '';
-			}
-		}
-		return self::$popupHTMLText;
 	}
 
 }

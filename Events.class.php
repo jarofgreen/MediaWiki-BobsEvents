@@ -128,20 +128,6 @@ class ExtEvents
                 	);
         	}
 
-		// Update the event popup box content
-		$popupText = ExtEventUtil::computeEventPopupBoxHTML();
-		if (isset($popupText)) {
-			$result = $wgParser->parse($popupText, $wgParser->mTitle,
-							$wgParser->mOptions); 
-			$newPopupText = $result->getText();
-			if ($newPopupText) {
-				$popupText = trim(preg_replace("/\\Q<!--\\E.*?\\Q-->\\E/s", '', $newPopupText));
-			}
-			$dbr->delete(	'eventglobal', '*' );
-			$dbr->insert(	'eventglobal',
-					array('popuphtml' => $popupText));
-		}
-
         	$this->clearEventBuffer();
 
 		return true;
@@ -161,18 +147,6 @@ class ExtEvents
 	private function getAdditionalStyle($event)
 	{
 		return "publicEvent";
-	}
-
-	public function outputPageBeforeHTML(&$out, &$text)
-	{
-		if (!self::$popupBoxOutput) {
-			self::$popupBoxOutput = true;
-			$popupText = ExtEventUtil::getEventPopupBoxHTML();
-			if (isset($popupText)) {
-				$text .= $popupText;
-			}
-		}
-		return true;
 	}
 
 }

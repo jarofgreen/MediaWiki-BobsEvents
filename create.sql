@@ -5,9 +5,3 @@ CREATE TABLE events (
 	summary TEXT NOT NULL,
 	KEY date_idx (page_id,start_at)
 );
-
-CREATE TABLE eventglobal (
-	popuphtml TEXT NOT NULL
-);
-
-

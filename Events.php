@@ -10,19 +10,7 @@ if ( !defined( 'MEDIAWIKI' ) ) {
  * extension file.
  */
 
-/** Indicates if the box for important events should be rendered.
- * To enable the event box, this global variable must be true,
- * AND the current skin must implement a function named
- * isEventsExtensionImportantEventEnabled() which replies
- * if the skin support the event box style.
- */
-$wgEventExtensionRenderImportantEventBox = true;
-
-/** Is the URL to the icon which is displayed to close the event popup box.
- * Expected sizes: 12x12 or 16x16
- */
-$wgEventsCloseButtonIcon = '/extensions/Events/images/close.png';
-
+/** ... actually, none at the moment **/
 
 /** REGISTRATION */
 $wgExtensionFunctions[] = 'wfSetupEvents';
@@ -61,7 +49,6 @@ function wfSetupEvents()
 	$wgHooks['ParserClearState'][] = array( &$wgEventsHookStub, 'clearState' );
 	$wgHooks['ArticleSave'][] = array( &$wgEventsHookStub, 'saveArticlePre' );
 	$wgHooks['ArticleSaveComplete'][] = array( &$wgEventsHookStub, 'saveArticlePost' );
-	$wgHooks['OutputPageBeforeHTML'][] = array( &$wgEventsHookStub, 'outputPageBeforeHTML' );
 
 	$wgSpecialPages['SpecialEvents'] = 'ExtSpecialEvents';
 	$wgSpecialPageGroups['SpecialEvents'] = 'other';
