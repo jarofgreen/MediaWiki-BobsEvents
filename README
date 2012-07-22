@@ -13,5 +13,5 @@ Licensed under GNU GPL. See COPYING for more license information.
 
 == Database
 Before using this extension, you need to initialize your database.
-See create.sql file
+See create.mysql.sql file
 
