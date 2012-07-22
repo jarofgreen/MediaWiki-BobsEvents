@@ -110,25 +110,37 @@ class ExtEvents
 
 		$dbr =& ExtEventUtil::getDatabase(EVENTS_DB_ACCESS_ALL);
 
-		$dbr->delete(
+		$dbr->update(
 			'events',
-			array( 'page_id' => $pageId ));
+			array( 'deleted' => 1 ),
+			array('page_id'=>$pageId));
 
 		// Add events in the database
-	        foreach ($this->events as $event) {
-			$dbevent = array(
-				'page_id' => $pageId,
-				'summary' => $event->getSummary(),
-				'start_at' => date("Y-m-d H:i:s",$event->getStartTimeStamp()),
-				'end_at' => date("Y-m-d H:i:s",$event->getEndTimeStamp()),
-			);
-                	$dbr->insert(
-                        	'events',
-                        	$dbevent
-                	);
-        	}
+		foreach ($this->events as $event) {
+		
+			$res = $dbr->select(
+				'events', 
+				array('page_id'), 
+				"(page_id = ".$pageId." AND start_at='".date("Y-m-d H:i:s",$event->getStartTimeStamp())."')");
+			if ($res && $res->numRows() > 0) {
+				$dbr->update(
+						'events',
+						array( 'deleted' => 0, 'summary'=>$event->getSummary() ),
+						array('page_id'=>$pageId,'start_at'=>date("Y-m-d H:i:s",$event->getStartTimeStamp()))
+					);				
+			} else {
+				$dbevent = array(
+					'page_id' => $pageId,
+					'summary' => $event->getSummary(),
+					'start_at' => date("Y-m-d H:i:s",$event->getStartTimeStamp()),
+					'end_at' => date("Y-m-d H:i:s",$event->getEndTimeStamp()),
+				);
+				$dbr->insert('events',$dbevent);
+			}
+			
+		}
 
-        	$this->clearEventBuffer();
+		$this->clearEventBuffer();
 
 		return true;
 	}

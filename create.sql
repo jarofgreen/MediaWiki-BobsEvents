@@ -3,5 +3,6 @@ CREATE TABLE events (
 	start_at DATETIME NOT NULL,
 	end_at DATETIME NOT NULL,
 	summary TEXT NOT NULL,
+	deleted BOOLEAN DEFAULT 0,
 	KEY date_idx (page_id,start_at)
 );

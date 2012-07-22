@@ -40,13 +40,13 @@ class ExtSpecialEvents extends SpecialPage
 		}
 
 		// Run the SQL.
-	        $res = $dbr->select(
-        	        'events', 
-                	array('page_id','start_at','end_at','summary'), 
-	                '(end_at > current_date)',
-        	        'Database::select',
-                	$options);
-        	if (!$res) {
+		$res = $dbr->select(
+				'events', 
+				array('page_id','start_at','end_at','summary'), 
+				'(end_at > current_date AND deleted=0)',
+				'Database::select',
+				$options);
+		if (!$res) {
 			$wgOut->addHTML(ExtEventUtil::errorMsg('specialevents_empty_list'));
 			return;
 		}

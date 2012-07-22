@@ -39,7 +39,7 @@ class ExtSpecialEventsExport extends SpecialPage
 		// Run the SQL.
 		$res = $dbr->select(
 				'events', 
-				array('page_id','start_at','end_at','summary'), 
+				array('page_id','start_at','end_at','summary','deleted'), 
 				'(end_at > current_date)',
 				'Database::select',
 				$options);			 
@@ -67,8 +67,13 @@ class ExtSpecialEventsExport extends SpecialPage
 			$this->printLine('BEGIN','VEVENT');
 			$this->printLine('DTSTART',str_replace("-", "", $event->getStartTimeStamp()).'T000000Z');
 			$this->printLine('DTEND',str_replace("-", "", $event->getEndTimeStamp()).'T230000Z');
-			$this->printLine('SUMMARY',$event->getSummary());
-			$this->printLine('DESCRIPTION',$wgServer."/index.php/".$pageTitle);
+			if ($event->getDeleted()) {
+				$this->printLine('METHOD', 'CANCEL');
+				$this->printLine('STATUS', 'CANCELLED');
+			} else {
+				$this->printLine('SUMMARY',$event->getSummary());
+				$this->printLine('DESCRIPTION',$wgServer."/index.php/".$pageTitle);
+			}
 			$this->printLine('END','VEVENT');
 			
 		}
