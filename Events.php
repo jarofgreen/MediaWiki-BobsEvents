@@ -17,10 +17,10 @@ $wfEventsDefaultTimeZone = "Europe/London";
 $wgExtensionFunctions[] = 'wfSetupEvents';
 $wgExtensionCredits['parserhook'][] = array(
 	'path' => __FILE__,
-	'name' => 'Events',
-	'version' => '3.1',
-	'url' => 'http://www.mediawiki.org/wiki/Extension:Events',
-	'author' => array('Aran Clary Deltac', 'Sylvain Machefert', '[[:Wikipedia:User:sgalland-arakhne|Stéphane GALLAND]]'),
+	'name' => 'BobEvents',
+	'version' => '0.1',
+	'url' => 'http://jarofgreen.co.uk',
+	'author' => array('[http://jarofgreen.co.uk James Baster]','Aran Clary Deltac', 'Sylvain Machefert', '[[:Wikipedia:User:sgalland-arakhne|Stéphane GALLAND]]'),
 	'descriptionmsg' => 'events_desc',
 );
 
