@@ -5,9 +5,9 @@ Only MediaWiki V1.19.x and MySQL are supported
 Licensed under GNU GPL. See COPYING for more license information.
 
 == How to install
-   a. Download this tarball and extract the contents to $IP/extensions/Events/
+   a. Download this tarball and extract the contents to $IP/extensions/BobsEvents/
       where $IP is your root wiki install
-   b. Add 'require( "extensions/Events/Events.php");' to your
+   b. Add 'require( "extensions/BobsEvents/Events.php");' to your
       LocalSettings (without the single quotes)
    c. Enjoy
 
