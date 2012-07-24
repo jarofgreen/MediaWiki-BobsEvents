@@ -68,14 +68,19 @@ function expandEvents( $input, array $args, Parser $parser, PPFrame $frame ) {
 	
 	
 	$out = '<div class="catlinks">';
-	$out .= "Event ".htmlspecialchars($event->getSummary());
-	
-	$dateTimeObj->setTimestamp($event->getStartTimeStamp());
-	$out .= " From ". $dateTimeObj->format("g:ia D jS M Y");
-	
-	$dateTimeObj->setTimestamp($event->getEndTimeStamp());
-	$out .= " To ". $dateTimeObj->format("g:ia D jS M Y");
-			
+	if ($event->isValid()) {
+		$out .= "Event ".htmlspecialchars($event->getSummary());
+
+		$dateTimeObj->setTimestamp($event->getStartTimeStamp());
+		$out .= " From ". $dateTimeObj->format("g:ia D jS M Y");
+
+		$dateTimeObj->setTimestamp($event->getEndTimeStamp());
+		$out .= " To ". $dateTimeObj->format("g:ia D jS M Y");
+
+		
+	} else {
+		$out .= "Event could not be parsed!";
+	}
 	$out .= "</div>";
 	return $out;
 }
