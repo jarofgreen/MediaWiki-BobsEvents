@@ -35,13 +35,21 @@ class ExtEventObject {
 		}
 		
 		if (isset($data['Start'])) {
-			$obj = new DateTime($data['Start'],$timeZone);
-			$this->startTimeStamp = $obj->getTimestamp();
+			try {
+				$obj = new DateTime($data['Start'],$timeZone);
+				$this->startTimeStamp = $obj->getTimestamp();
+			} catch (Exception $e) {
+				// error parsing. Ignore
+			}
 		}
 		
 		if (isset($data['End'])) {
-			$obj = new DateTime($data['End'],$timeZone);
-			$this->endTimeStamp = $obj->getTimestamp();
+			try {
+				$obj = new DateTime($data['End'],$timeZone);
+				$this->endTimeStamp = $obj->getTimestamp();
+			} catch (Exception $e) {
+				// error parsing. Ignore
+			}
 		}
 		
 	}
@@ -55,7 +63,7 @@ class ExtEventObject {
 	}
 
 	function isValid() {
-		return (Boolean)$this->startTimeStamp;
+		return ($this->startTimeStamp > 0);
 	}
 }
 
