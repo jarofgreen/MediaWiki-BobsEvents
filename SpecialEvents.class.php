@@ -42,7 +42,7 @@ class ExtSpecialEvents extends SpecialPage
 		// Run the SQL.
 		$res = $dbr->select(
 				'events', 
-				array('page_id','start_at','end_at','summary'), 
+				array('page_id','start_at','end_at','summary','url'), 
 				'(end_at > '.time().' AND deleted=0)',
 				'Database::select',
 				$options);
@@ -72,7 +72,9 @@ class ExtSpecialEvents extends SpecialPage
 
 			if ($out) $out .= "|-\n";
 
-			$out .= "| $text\n";
+			$out .= "| $text";
+			if ($event->getURL()) $out .= " ".$event->getURL();
+			$out .= "\n";
 			$out .= "| width=20% | \n";
 			
 			$out .= "|-\n";

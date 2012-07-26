@@ -128,13 +128,14 @@ class ExtEvents
 				if ($res && $res->numRows() > 0) {
 					$dbr->update(
 							'events',
-							array( 'deleted' => 0, 'summary'=>$event->getSummary() ),
+							array( 'deleted' => 0, 'summary'=>$event->getSummary(), 'url'=>$event->getUrl() ),
 							array('page_id'=>$pageId,'start_at'=>$event->getStartTimeStamp())
 						);				
 				} else {
 					$dbevent = array(
 						'page_id' => $pageId,
 						'summary' => $event->getSummary(),
+						'url'=>$event->getUrl(),
 						'start_at' => $event->getStartTimeStamp(),
 						'end_at' => $event->getEndTimeStamp(),
 					);

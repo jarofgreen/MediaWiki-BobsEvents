@@ -8,6 +8,7 @@ class ExtEventObject {
 	private $endTimeStamp;
 	private $summary;
 	private $deleted;
+	private $url;
 	
 	function setStartTimeStamp($start) {  $this->startTimeStamp = $start; }
 	function getStartTimeStamp() { return $this->startTimeStamp; }
@@ -17,6 +18,8 @@ class ExtEventObject {
 	
 	function setSummary($summary) {  $this->summary = $summary; }
 	function getSummary() { return $this->summary; }
+	
+	function getURL() { return $this->url; }
 	
 	function getPageId() { return $this->page_id; }
 	function getDeleted() { return $this->deleted; }
@@ -32,6 +35,10 @@ class ExtEventObject {
 		}
 		if (!$this->summary && $pageTitle) {
 			$this->summary = $pageTitle;
+		}
+		
+		if (isset($data['URL']) && filter_var($data['URL'], FILTER_VALIDATE_URL)) {
+			$this->url = $data['URL'];
 		}
 		
 		if (isset($data['Start'])) {
@@ -60,6 +67,7 @@ class ExtEventObject {
 		$this->summary = $data['summary'];
 		$this->startTimeStamp = $data['start_at'];
 		$this->endTimeStamp = $data['end_at'];
+		$this->url = $data['url'];
 	}
 
 	function isValid() {

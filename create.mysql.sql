@@ -3,6 +3,7 @@ CREATE TABLE events (
 	start_at INT UNSIGNED NOT NULL,
 	end_at INT UNSIGNED NOT NULL,
 	summary TEXT NOT NULL,
+	url VARCHAR(255) NULL,
 	deleted BOOLEAN DEFAULT 0,
 	KEY date_idx (page_id,start_at)
 );

@@ -77,6 +77,9 @@ function expandEvents( $input, array $args, Parser $parser, PPFrame $frame ) {
 		$dateTimeObj->setTimestamp($event->getEndTimeStamp());
 		$out .= " To ". $dateTimeObj->format("g:ia D jS M Y");
 
+		if ($event->getUrl()) {
+			$out .= ' <a href="'.$event->getUrl().'" target="_blank">More Info</a>';
+		}
 		
 	} else {
 		$out .= "Event could not be parsed!";
