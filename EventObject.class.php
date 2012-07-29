@@ -4,6 +4,7 @@
 class ExtEventObject {
 	
 	private $page_id;
+	private $page_title;
 	private $startTimeStamp;
 	private $endTimeStamp;
 	private $summary;
@@ -19,6 +20,8 @@ class ExtEventObject {
 	function setSummary($summary) {  $this->summary = $summary; }
 	function getSummary() { return $this->summary; }
 	
+	function getSummaryForFeed() { return $this->page_title." ".$this->summary; }
+	
 	function getURL() { return $this->url; }
 	
 	function getPageId() { return $this->page_id; }
@@ -33,9 +36,7 @@ class ExtEventObject {
 		if (isset($data['Summary'])) {
 			$this->summary = $data['Summary'];
 		}
-		if (!$this->summary && $pageTitle) {
-			$this->summary = $pageTitle;
-		}
+		$this->page_title = $pageTitle;
 		
 		if (isset($data['URL']) && filter_var($data['URL'], FILTER_VALIDATE_URL)) {
 			$this->url = $data['URL'];
@@ -61,8 +62,9 @@ class ExtEventObject {
 		
 	}
 	
-	function setFromDBRow($data) {
+	function setFromDBRow($data, $pageTitle=null) {
 		$this->page_id = $data['page_id'];
+		$this->page_title = $pageTitle;
 		$this->deleted = isset($data['deleted']) ? $data['deleted'] : 0;
 		$this->summary = $data['summary'];
 		$this->startTimeStamp = $data['start_at'];

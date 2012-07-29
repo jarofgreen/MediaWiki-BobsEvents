@@ -62,13 +62,13 @@ class ExtSpecialEventsExport extends SpecialPage
 		
 		while ($eventData = $dbr->fetchRow( $res )) {
 			
-			$event = new ExtEventObject();
-			$event->setFromDBRow($eventData);
 			
-			$pageTitle = isset($pageTitleBuffer[$event->getPageId()]) ? $pageTitleBuffer[$event->getPageId()] : null;
-			if (!$pageTitle) {
-				$pageTitle = $pageTitleBuffer[$event->getPageId()] = Title::nameOf($event->getPageId());
-			}
+			if (!isset($pageTitleBuffer[$eventData['page_id']])) $pageTitleBuffer[$eventData['page_id']] = Title::nameOf($eventData['page_id']);
+			$pageTitle =  $pageTitleBuffer[$eventData['page_id']];
+			
+			$event = new ExtEventObject();
+			$event->setFromDBRow($eventData, $pageTitle);
+
 			
 			$this->printLine('BEGIN','VEVENT');
 			$this->printLine('UID','p'.$event->getPageId().'-s'.$event->getStartTimeStamp().'@'.$serverNameOnly);
@@ -84,7 +84,7 @@ class ExtSpecialEventsExport extends SpecialPage
 				$this->printLine('METHOD', 'CANCEL');
 				$this->printLine('STATUS', 'CANCELLED');
 			} else {
-				$this->printLine('SUMMARY',$event->getSummary());
+				$this->printLine('SUMMARY',$event->getSummaryForFeed());
 				if ($event->getURL()) {
 					$this->printLine('DESCRIPTION',$event->getUrl() ." (From ". $wgServer."/index.php/".$pageTitle." )");
 				} else {
