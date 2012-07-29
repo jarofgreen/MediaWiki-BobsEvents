@@ -87,7 +87,8 @@ class ExtSpecialEvents extends SpecialPage
 		}
 
 		if ($out) {
-			$out = "{| class=\"frametable\"\n".
+			$out = "[[Special:SpecialEventsExport|Download events (iCal)]]\n". 
+					"{| class=\"frametable\"\n".
 				"! ".wfMsgExt(
                                         'specialevents_header_text',
                                         array( 'escape', 'parsemag', 'content' ))."\n".
