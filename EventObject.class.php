@@ -29,8 +29,7 @@ class ExtEventObject {
 	
 	function parseText($text, $pageTitle=null) {
 		global $wfEventsDefaultTimeZone;
-		$data = parse_ini_string($text);
-		
+		$data = @parse_ini_string($text);
 		$timeZone = new DateTimeZone($wfEventsDefaultTimeZone);
 		
 		if (isset($data['Summary'])) {
