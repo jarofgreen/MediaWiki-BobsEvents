@@ -23,29 +23,13 @@ class ExtSpecialEvents extends SpecialPage
 	 */
 	public function execute( $par ) {
 		global $wgOut, $wgUser, $wfEventsDefaultTimeZone;
-
-		// Parse special page arguments
-		$args = array();
-		parse_str($par, $args);
-
+		
 		$this->setHeaders();
 
+		$search = new ExtEventSearch();
+		$search->parseArgsString($par);		
 		$dbr =& ExtEventUtil::getDatabase();
-
-		// Build SQL query options
-		$options = array( 'ORDER BY'=>'start_at ASC' );
-
-		if (isset($args['limit']) && $args['limit']) {
-                	$options['LIMIT'] = $args['limit'];
-		}
-
-		// Run the SQL.
-		$res = $dbr->select(
-				'events', 
-				array('page_id','start_at','end_at','summary','url'), 
-				'(end_at > '.time().' AND deleted=0)',
-				'Database::select',
-				$options);
+		$res = $search->getDataBaseResults($dbr);
 		if (!$res) {
 			$wgOut->addHTML(ExtEventUtil::errorMsg('specialevents_empty_list'));
 			return;
@@ -87,7 +71,7 @@ class ExtSpecialEvents extends SpecialPage
 		}
 
 		if ($out) {
-			$out = "[[Special:SpecialEventsExport|Download events (iCal)]]\n". 
+			$out = "[[Special:SpecialEventsExport/".$search->getArgsString()."|Download events (iCal)]]\n". 
 					"{| class=\"frametable\"\n".
 				"! ".wfMsgExt(
                                         'specialevents_header_text',

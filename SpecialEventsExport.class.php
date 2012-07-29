@@ -23,31 +23,14 @@ class ExtSpecialEventsExport extends SpecialPage
 
 		$serverNameOnly = $wgServer;
 		if (substr($serverNameOnly,0,7) == "http://") $serverNameOnly = substr($serverNameOnly,7);
-		
-		// Parse special page arguments
-		$args = array();
-		parse_str($par, $args);
-
+				
 		$this->setHeaders();
 
+		$search = new ExtEventSearch();
+		$search->parseArgsString($par);		
 		$dbr =& ExtEventUtil::getDatabase();
+		$res = $search->getDataBaseResults($dbr);
 
-		// Build SQL query options
-		$options = array( 'ORDER BY'=>'start_at ASC' );
-
-		if (isset($args['limit']) && $args['limit']) {
-					$options['LIMIT'] = $args['limit'];
-		}
-		
-		// Run the SQL.
-		$res = $dbr->select(
-				'events', 
-				array('page_id','start_at','end_at','summary','deleted','url'), 
-				'(end_at > '.time().')',
-				'Database::select',
-				$options);			 
-
-		
 		$dateTimeObj = new DateTime("now",new DateTimeZone(("UTC")));
 
 
